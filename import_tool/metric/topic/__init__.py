@@ -9,6 +9,9 @@ from visualize.models import TopicMetricValue
 #~ import subset_token_count
 import token_count
 import type_count
+
+from sys import path
+path.insert(0,'import_tool/metric/topic')
 import document_entropy
 import word_entropy
 import temperature

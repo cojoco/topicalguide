@@ -25,7 +25,7 @@ class Metric(models.Model):
     name = models.CharField(max_length=128, unique=True)
     
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 class MetricValue(models.Model):
     metric = models.ForeignKey('Metric')
@@ -35,7 +35,7 @@ class MetricValue(models.Model):
         abstract = True
     
     def __unicode__(self):
-        return unicode(self.value)
+        return str(self.value)
 
 class MetadataType(models.Model):
     
@@ -83,7 +83,7 @@ class MetadataType(models.Model):
     
     def __unicode__(self):
         is_ordinal = self.ordinal is not None
-        return 'Name: %s\nDatatype: %s\nOrdinal: %s'%(unicode(self.name), unicode(self.datatype), unicode(is_ordinal))
+        return 'Name: %s\nDatatype: %s\nOrdinal: %s'%(str(self.name), str(self.datatype), str(is_ordinal))
     
     @staticmethod
     def get_allowed_types():
@@ -153,7 +153,7 @@ class Ordinal(models.Model):
     name = models.CharField(max_length=64)
     
     def __unicode__(self):
-        return unicode(self.index) + ':' + value
+        return str(self.index) + ':' + value
 
 class MetadataValue(models.Model):
     metadata_type = models.ForeignKey('MetadataType')
@@ -167,14 +167,14 @@ class MetadataValue(models.Model):
         abstract = True
     
     def __unicode__(self):
-        return unicode(self.value())
+        return str(self.value())
 
     def set(self, value):
         value_type = self.metadata_type.datatype
         if value_type == MetadataType.FLOAT:
             self.float_value = float(value)
         elif value_type == MetadataType.TEXT or value_type == MetadataType.ORDINAL:
-            self.text_value = unicode(value)
+            self.text_value = str(value)
         elif value_type == MetadataType.INTEGER:
             self.int_value = int(value)
         elif value_type == MetadataType.BOOLEAN:
@@ -199,7 +199,7 @@ class MetadataValue(models.Model):
             result = self.bool_value
         if self.datetime_value:
             if result: raise Exception("MetadataValues cannot be of more than one type.")
-            result = unicode(self.datetime_value)
+            result = str(self.datetime_value)
         return result
 
     def type(self):
@@ -363,7 +363,7 @@ class Document(models.Model):
         unique_together = ('dataset', 'index')
     
     def __unicode__(self):
-        return unicode(self.filename)
+        return str(self.filename)
     
     def get_metadata(self):
         result = {}
@@ -381,9 +381,9 @@ class Document(models.Model):
         return content
 	
     def get_intro_snippet(self):
-		snippet = self.get_content()[0: 200]
-		index = snippet.rfind(' ')
-		return snippet[0:index]+' ...'
+        snippet = self.get_content()[0:200]
+        index = snippet.rfind(' ')
+        return snippet[0:index]+' ...'
     
     def get_key_word_in_context(self, token_indices, pre=80, post=80):
         word_tokens = self.tokens.filter(token_index__in=token_indices).order_by("start_index")
@@ -653,7 +653,7 @@ class TopicNameScheme(models.Model):
     name = models.CharField(max_length=128, unique=True)
     
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 class TopicName(models.Model):
     topic = models.ForeignKey('Topic', related_name='names')
@@ -664,7 +664,7 @@ class TopicName(models.Model):
         unique_together = ('topic', 'name_scheme')
     
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 ##############################################################################
 # Tables for tokenization schemes, tokens, word types, word representations.
@@ -675,7 +675,7 @@ class WordType(models.Model):
     word = models.CharField(max_length=128, unique=True)
     
     def __unicode__(self):
-        return unicode(self.word)
+        return str(self.word)
 
 # Warning: this class doesn't have an auto-incrementing primary key.
 class WordToken(models.Model):

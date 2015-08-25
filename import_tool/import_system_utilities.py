@@ -18,6 +18,8 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'topicalguide.settings'
 from django.db import transaction, connections
 from django.db.models import Max
 
+import sys
+sys.path.insert(0, 'import_tool')
 import basic_tools
 from tools import VerboseTimer
 from dataset.utilities import create_dataset, create_documents
@@ -139,9 +141,9 @@ def check_dataset(dataset):
     def print_dict(msg, d, value_is_list=True):
         print(msg)
         if value_is_list:
-            for k, v in d.iteritems(): print('%s: %s'%(k, ','.join(v)))
+            for k, v in d.items(): print('%s: %s'%(k, ','.join(v)))
         else:
-            for k, v in d.iteritems(): print('%s: %s'%(k, v))
+            for k, v in d.items(): print('%s: %s'%(k, v))
         print()
         
     
@@ -243,7 +245,7 @@ def check_analysis(database_id, dataset_name, analysis, directories,
     """
     def dict_to_string(d):
         result = ''
-        for k, v in d.iteritems():
+        for k, v in d.items():
             result += unicode(k) + ': ' + unicode(v) + '\n'
         return result
     

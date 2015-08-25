@@ -361,7 +361,7 @@ def main():
                                 Note that you may need to build the stemmer by running the script
                                 "tools/stemmer/make_english_stemmer.sh" from the directory "tools/stemmer".
                                 """)
-    analysis_parser.add_argument('--token-regex', type=unicode, action='store', default=import_system_utilities.TOKEN_REGEX,
+    analysis_parser.add_argument('--token-regex', type=str, action='store', default=import_system_utilities.TOKEN_REGEX,
                                 help=
                                 """Optionally specify the token regex to be used with this dataset, 
                                 allowing white space will cause errors.

@@ -27,6 +27,8 @@ from django.template import RequestContext, loader
 from django.views.decorators.gzip import gzip_page
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
+from sys import path
+path.insert(0,'visualize')
 import api
 import json
 
@@ -69,7 +71,7 @@ def root(request, *args, **kwargs):
     try:
         tags = Repo(__file__).tags
         if tags:
-            version = unicode(tags[-1])
+            version = str(tags[-1])
     except:
         pass
     

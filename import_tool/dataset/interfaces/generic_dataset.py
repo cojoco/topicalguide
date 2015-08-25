@@ -43,7 +43,7 @@ class GenericDataset(AbstractDataset):
             with io.open(self._settings_file, 'r', encoding='utf-8', errors='ignore') as settings_file:
                 raw_text = settings_file.read()
                 settings = json.loads(raw_text)
-                for key, value in settings.iteritems():
+                for key, value in settings.items():
                     if key == 'dataset_metadata':
                         self.metadata = value
                     if key == 'dataset_metadata_types':
@@ -102,7 +102,7 @@ class GenericDataset(AbstractDataset):
         self._documents_index = 0
         return self
     
-    def next(self):
+    def __next__(self):
         """
         Return the next GenericDocument.  Files that cannot be opened \
         or raise an error will not be included.

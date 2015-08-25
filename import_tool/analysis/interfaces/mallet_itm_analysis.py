@@ -227,11 +227,11 @@ class MalletItmAnalysis(AbstractITMAnalysis):
                     tokens = self.tokenize(doc.get_content())
                     for token, token_start in tokens:
                         temp_word_type_counts[token] = temp_word_type_counts.setdefault(token, 0) + 1
-                for word_type, count in temp_word_type_counts.iteritems(): # add singletons to stopword list
+                for word_type, count in temp_word_type_counts.items(): # add singletons to stopword list
                     if count <= word_type_count_threshold:
                         self._excluded_words[word_type] = True
                 with io.open(self.excluded_words_file, 'w', encoding='utf-8') as ex_f:
-                    ex_f.write(unicode(json.dumps(self._excluded_words)))
+                    ex_f.write(str(json.dumps(self._excluded_words)))
             
             haltwords = dict(self.stopwords)
             haltwords.update(self._excluded_words)
@@ -254,7 +254,7 @@ class MalletItmAnalysis(AbstractITMAnalysis):
                     count = 0
                     subcount = 0
                     for doc_index, doc in enumerate(documents):
-                        doc_content = unicode(doc.get_content())
+                        doc_content = str(doc.get_content())
                         count += 1
                         subdocuments = self.create_subdocuments(doc_index, doc_content)
                         token_start_index_offset = 0 # needed to make sure the start index remains correct once the document is re-merged
@@ -292,12 +292,12 @@ class MalletItmAnalysis(AbstractITMAnalysis):
                                     tok_num = len(wordtype_to_number)
                                     number_to_wordtype.append(tok_stem)
                                     wordtype_to_number[tok_stem] = tok_num
-                                token_numbers.append(unicode(tok_num))
+                                token_numbers.append(str(tok_num))
                                 token_start_indices.append([tok, tok_start])
                             text = u' '.join(token_numbers)
                             #~ print(text)
                             w.write(u'{0} all {1}\n'.format(subdoc_name, text))
-                            w2.write(unicode(json.dumps(token_start_indices)))
+                            w2.write(str(json.dumps(token_start_indices)))
                             token_start_index_offset += len(subdoc_content)
                             for tok, tok_start in tokens:
                                 try:
@@ -312,13 +312,13 @@ class MalletItmAnalysis(AbstractITMAnalysis):
                         raise Exception('No files processed.')
             # record which subdocuments belong to which documents
             with io.open(self.subdoc_to_doc_map_file, 'w', encoding='utf-8') as w:
-                w.write(unicode(json.dumps(subdoc_to_doc_map)))
+                w.write(str(json.dumps(subdoc_to_doc_map)))
             with io.open(self.wordtype_to_number_file, 'w', encoding='utf-8') as w:
-                w.write(unicode(json.dumps(wordtype_to_number)))
+                w.write(str(json.dumps(wordtype_to_number)))
             with io.open(self.number_to_wordtype_file, 'w', encoding='utf-8') as w:
-                w.write(unicode(json.dumps(number_to_wordtype)))
+                w.write(str(json.dumps(number_to_wordtype)))
             with io.open(self.wordtype_file, 'w', encoding='utf-8') as w:
-                w.write(unicode(json.dumps(wordtypes)))
+                w.write(str(json.dumps(wordtypes)))
             self.wordtype_to_number = wordtype_to_number
         except: # cleanup
             self._cleanup(self.mallet_input_file)
@@ -378,11 +378,11 @@ class MalletItmAnalysis(AbstractITMAnalysis):
             #~ print(self.wordtype_to_number)
             for ii in merge_links:
                 if len(ii) >= 2:
-                    wordtype_indices = [unicode(self.wordtype_to_number[wt]) for wt in ii]
+                    wordtype_indices = [str(self.wordtype_to_number[wt]) for wt in ii]
                     o.write("MERGE_\t%s\n" % "\t".join(wordtype_indices))
             for jj in split_links:
                 if len(jj) >= 2:
-                    wordtype_indices = [unicode(self.wordtype_to_number[wt]) for wt in jj]
+                    wordtype_indices = [str(self.wordtype_to_number[wt]) for wt in jj]
                     o.write("SPLIT_\t%s" % "\t".join(wordtype_indices))
 
         # Generate the protocol buffer with the real version

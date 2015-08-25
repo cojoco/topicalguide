@@ -2,7 +2,7 @@ from __future__ import division, print_function, unicode_literals
 import os
 import re
 from DateTime import DateTime
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 from visualize.models import MetadataType
 
 
@@ -118,7 +118,7 @@ def verify_types(metadata_types, metadata, metadata_ordinal_sets={}):
     Return a list of the offending keys; empty list otherwise.
     """
     result = []
-    for name, t in metadata_types.iteritems():
+    for name, t in metadata_types.items():
         if name in metadata:
             value = metadata[name]
             if t == MetadataType.ORDINAL:
@@ -139,7 +139,7 @@ def collect_types(metadata_types, metadata, doc_meta_ordinal_sets={}):
     Note that if there are conflicting types then the type in metadata_types is \
     degraded to 'text'.
     """
-    for meta_key, meta_value in metadata.iteritems():
+    for meta_key, meta_value in metadata.items():
         t = MetadataType.determine_type(meta_value)
         if not meta_key in metadata_types:
             if meta_key in doc_meta_ordinal_sets:
@@ -196,7 +196,7 @@ def create_subdocuments(name, content, major_delimiter='\n', min_chars=1000):
                 subdoc_number += 1
     
     result = []
-    for index in xrange(0, subdoc_number):
+    for index in range(0, subdoc_number):
         result.append((name + '_subdoc' + str(index), subdoc_contents[index]))
     return result
 

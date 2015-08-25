@@ -74,7 +74,7 @@ class RandomDocument(AbstractDocument):
         self.name = ''
         self.source = None
         self.content = ''
-        for i in xrange(0, document_length):
+        for i in range(0, document_length):
             r = random.randint(ASCII_MIN, ASCII_MAX+2)
             if r <= ASCII_MAX:
                 self.content += chr(r)

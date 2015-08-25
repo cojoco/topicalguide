@@ -1,4 +1,6 @@
 from __future__ import division, print_function, unicode_literals
+from sys import path
+path.insert(0, 'import_tool/analysis/interfaces')
 from mallet_analysis import MalletLdaAnalysis, MalletHldaAnalysis
 from mallet_itm_analysis import MalletItmAnalysis
 from random_analysis import RandomAnalysis

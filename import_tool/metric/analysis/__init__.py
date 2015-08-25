@@ -1,6 +1,9 @@
 from __future__ import division, print_function, unicode_literals
 from collections import OrderedDict
 from visualize.models import AnalysisMetricValue
+
+from sys import path
+path.insert(0, 'import_tool/metric/analysis')
 import entropy
 import token_count
 import type_count

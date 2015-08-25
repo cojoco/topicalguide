@@ -4,7 +4,9 @@ from django.db.models import Sum
 from abstract_topic_namer import AbstractTopicNamer
 from visualize.models import TopicNameScheme, TopicName
 from django.db import transaction, connections
+from functools import cmp_to_key
 import math
+
 
 
 # The TF-ITF score is computed as follows:
@@ -18,7 +20,7 @@ class TfitfTopicNamer(AbstractTopicNamer):
     
     @property
     def name_scheme(self):
-        return 'TF-ITF Top '+unicode(self.n)
+        return 'TF-ITF Top '+str(self.n)
     
     def name_topics(self, database_id, analysis_db):
         def compare_float(a, b):
@@ -34,19 +36,19 @@ class TfitfTopicNamer(AbstractTopicNamer):
         
         # Calculate ITF
         ITF = analysis_db.topic_word_type_occurrences()
-        for key, value in ITF.iteritems():
+        for key, value in ITF.items():
             ITF[key] = math.log(topic_count)-math.log(value)
         
         topic_names = {}
         # Calculate TF-ITF scores and take the max
         for topic_db in analysis_db.topics.all():
             topic_tf_itf = topic_db.word_token_type_counts(words='*')
-            for word, count in topic_tf_itf.iteritems():
+            for word, count in topic_tf_itf.items():
                 topic_tf_itf[word] = count*ITF[word]
             
-            name = u' '.join([unicode(word) for word, count in \
-                sorted([(key, value) for key, value in topic_tf_itf.iteritems()],
-                        compare_float)[:self.n]])
+            name = u' '.join([str(word) for word, count in \
+                sorted([(key, value) for key, value in topic_tf_itf.items()],
+                        key=cmp_to_key(compare_float))[:self.n]])
             
             topic_names[topic_db.number] = name
         return topic_names

@@ -1,6 +1,9 @@
 from __future__ import division, print_function, unicode_literals
 from django.db import transaction
 from django.db.models.aggregates import Count
+
+import sys
+sys.path.insert(0, 'import_tool/analysis/name_schemes')
 from abstract_topic_namer import AbstractTopicNamer
 from visualize.models import TopicNameScheme, TopicName
 

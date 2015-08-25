@@ -150,7 +150,7 @@ def query_server(options):
     def get_version(x):
         try:
             tags = Repo('.').tags
-            return unicode(tags[-1])
+            return str(tags[-1])
         except:
             return 'No version available.'
     
@@ -219,7 +219,7 @@ def query_datasets(options):
         if 'analyses' in options:
             attributes['analyses'] = query_analyses(options, dataset_db)
         
-        attributes['last_updated'] = unicode(dataset_db.last_updated)
+        attributes['last_updated'] = str(dataset_db.last_updated)
         
         datasets[dataset_db.name] = attributes
         
@@ -248,10 +248,10 @@ def modify_analysis(options, dataset_db, analysis_db):
         merge_constraints = copy_list_of_lists(original_merge_constraints)
         split_constraints = copy_list_of_lists(original_split_constraints)
         counter = 2
-        new_analysis_name = analysis_db.name + unicode(counter)
+        new_analysis_name = analysis_db.name + str(counter)
         while Analysis.objects.filter(name=new_analysis_name).exists():
             counter += 1
-            new_analysis_name = analysis_db.name + unicode(counter)
+            new_analysis_name = analysis_db.name + str(counter)
         
         word_types = set()
         for word_type_list in itertools.chain(merge_constraints, split_constraints):
@@ -336,7 +336,7 @@ def query_analyses(options, dataset_db):
             if 'documents' in options:
                 attributes['documents'] = query_documents(options, dataset_db, analysis_db)
         
-        attributes['last_updated'] = unicode(analysis_db.last_updated)
+        attributes['last_updated'] = str(analysis_db.last_updated)
         
         analyses[analysis_db.name] = attributes
         
