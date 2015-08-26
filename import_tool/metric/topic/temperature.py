@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 from visualize.models import MetadataType
 from django.db.models import Count
 from django.db import connections

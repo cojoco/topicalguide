@@ -60,14 +60,14 @@ def update_counts_from_topic(doc, topicmap, topic, counts_obj):
     - counts_obj : counts object to update
     """
     # the word filter looks if the first word is assigned to the topic
-    if (topic not in topicmap.values()): return
+    if (topic not in list(topicmap.values())): return
     root_filter = lambda w: topicmap.get(w.split()[0], -1)==topic
     counts_obj.update_counts(doc, root_filter=root_filter)
 
 
 def turbo_topic(corpus, assigns, topic, use_perm=False, pvalue=0.1, min=25):
 
-    def iter_gen(): return(itertools.izip(corpus, assigns))
+    def iter_gen(): return(zip(corpus, assigns))
     def update_fun(counts, doc):
         update_counts_from_topic(doc[0], doc[1], topic, counts)
 

@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 import os
 import re
 from DateTime import DateTime
@@ -118,7 +118,7 @@ def verify_types(metadata_types, metadata, metadata_ordinal_sets={}):
     Return a list of the offending keys; empty list otherwise.
     """
     result = []
-    for name, t in metadata_types.items():
+    for name, t in list(metadata_types.items()):
         if name in metadata:
             value = metadata[name]
             if t == MetadataType.ORDINAL:
@@ -139,7 +139,7 @@ def collect_types(metadata_types, metadata, doc_meta_ordinal_sets={}):
     Note that if there are conflicting types then the type in metadata_types is \
     degraded to 'text'.
     """
-    for meta_key, meta_value in metadata.items():
+    for meta_key, meta_value in list(metadata.items()):
         t = MetadataType.determine_type(meta_value)
         if not meta_key in metadata_types:
             if meta_key in doc_meta_ordinal_sets:
@@ -247,10 +247,10 @@ def get_unicode_content(file_path, encoding=None):
             return contents.decode(encoding=determined_encoding)
         else:
             with open(file_path, 'r') as f:
-                return unicode(f.read(), encoding=encoding, errors='ignore')
+                return str(f.read(), encoding=encoding, errors='ignore')
     except UnicodeError:
         with open(file_path, 'r') as f:
-            return unicode(f.read(), encoding='utf-8', errors='ignore')
+            return str(f.read(), encoding='utf-8', errors='ignore')
 
 def remove_punctuation(s):
     """Return a string without punctuation (only alpha, numeric, underscore and whitespace characters survive)."""

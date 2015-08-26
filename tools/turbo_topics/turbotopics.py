@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-from __future__ import division
+
 import sys, re, random, copy, itertools
 from math import *
 
@@ -98,7 +98,7 @@ class Counts:
         selected = {}
         out = sys.stdout.write
         scores = sig_test.score(marg_w, marg, bigram_w, total, min)
-        scores = sorted(scores.items(), key = lambda x: -x[1])
+        scores = sorted(list(scores.items()), key = lambda x: -x[1])
         for (cand, max_score) in [s for s in scores if s[1] > 0]:
             if (bigram_w[cand] < min): continue
             null_score = sig_test.null_score(marg_w, marg, total)
@@ -154,7 +154,7 @@ class LikelihoodRatio:
             return(log(x))
 
         val = {}
-        for v in bigram.keys():
+        for v in list(bigram.keys()):
             uni = unigram.get(v, 0)
             big = bigram.get(v, 0)
             if (big < min_count): continue
@@ -184,8 +184,8 @@ class LikelihoodRatio:
         if (perm_key in self.perms): return(self.perms[perm_key])
         max_score = 0
         nperm = int(1.0 / self.pvalue)
-        table = sorted(marg.items(), key = lambda x: -x[1])
-        for perm in xrange(nperm):
+        table = sorted(list(marg.items()), key = lambda x: -x[1])
+        for perm in range(nperm):
             perm_bigram = sample_no_replace(total, table, count)
             obs_score = self.score(count, marg, perm_bigram, total, 1)
             obs_score = max(obs_score.values())
@@ -216,7 +216,7 @@ class ChiSq:
         "returns the chi_sq test scores"
 
         scores = {}
-        for w2 in bigram.keys():
+        for w2 in list(bigram.keys()):
             if (bigram[w2] < min_count): continue
             o_11 = bigram[w2]
             o_12 = marg[w2] - bigram[w2]
@@ -263,7 +263,7 @@ class MultTest:
         n_nu = n - n_u
         log_n_u = log(n_u)
         log_n   = log(n)
-        for v in bigram.keys():
+        for v in list(bigram.keys()):
             if (bigram[v] < min_count): continue
             n_v    = marg[v]
             n_nv   = n - n_v
@@ -293,8 +293,8 @@ class MultTest:
         if (perm_key in self.perms): return(self.perms[perm_key])
         max_score = 0
         nperm = int(1.0 / self.pvalue)
-        table = sorted(marg.items(), key = lambda x: -x[1])
-        for perm in xrange(nperm):
+        table = sorted(list(marg.items()), key = lambda x: -x[1])
+        for perm in range(nperm):
             perm_bigram = sample_no_replace(total, table, count)
             obs_score = self.score(count, marg, perm_bigram, total, 1)
             obs_score = max(obs_score.values())
@@ -324,7 +324,7 @@ def write_vocab(v, outfname, incl_stop = False):
     "writes a file of terms and counts"
 
     f = file(outfname, 'w')
-    [f.write('%-25s %8.2f\n' % (i[0], i[1])) for i in sorted(v.items(),
+    [f.write('%-25s %8.2f\n' % (i[0], i[1])) for i in sorted(list(v.items()),
                                                        key=lambda x: -x[1])
      if (incl_stop or i[0] not in _stop_words)]
     f.close()
@@ -347,7 +347,7 @@ def sample_no_replace(total, table, nitems):
         print(n)
         assert(False)
 
-    sample = random.sample(xrange(total), nitems)
+    sample = random.sample(range(total), nitems)
     count = {}
     for n in sample:
         w = nth_item_from_table(n)
@@ -376,7 +376,7 @@ def word_list(doc, vocab):
         pos = pos + 1
         word = w
         state = vocab.setdefault(w, {})
-        while ((pos < len(singles)) and (state.has_key(singles[pos]))):
+        while ((pos < len(singles)) and (singles[pos] in state)):
             state = state[singles[pos]]
             word = word + ' ' + singles[pos]
             pos = pos + 1
@@ -405,7 +405,7 @@ def words_from_vocab_machine(mach):
     "recursively generate all possible words from a vocabulary machine."
 
     words = []
-    for (v_1, next_mach) in mach.items():
+    for (v_1, next_mach) in list(mach.items()):
         words.append(v_1)
         words.extend(['%s %s' % (v_1, v_2)
                       for v_2 in words_from_machine(next_mach)])
@@ -424,7 +424,7 @@ def nested_sig_bigrams(iter_generator, update_fun, sig_test, min):
     counts = Counts()
     for doc in iter_generator(): update_fun(counts, doc)
     terms = [item[0] for item in
-             sorted(counts.marg.items(), key=lambda x: -x[1])
+             sorted(list(counts.marg.items()), key=lambda x: -x[1])
              if item[1]>=min]
     while (len(terms) > 0):
         new_vocab = {}
@@ -434,7 +434,7 @@ def nested_sig_bigrams(iter_generator, update_fun, sig_test, min):
             sig_bigrams = counts.sig_bigrams(v, sig_test, min)
             new_vocab.update(sig_bigrams)
 
-        for selected in new_vocab.keys():
+        for selected in list(new_vocab.keys()):
             sys.stdout.write("bigram : %s\n" % selected)
             update_vocab(selected, counts.vocab)
 
@@ -442,7 +442,7 @@ def nested_sig_bigrams(iter_generator, update_fun, sig_test, min):
         counts.reset_counts()
         for doc in iter_generator(): update_fun(counts, doc)
         terms = [item[0] for item in
-                 sorted(new_vocab.items(), key=lambda x: -x[1])
+                 sorted(list(new_vocab.items()), key=lambda x: -x[1])
                  if item[1]>=min]
 
     return(counts)

@@ -1,9 +1,9 @@
-from __future__ import division, print_function, unicode_literals
+
 import os
 import io
 import json
 from import_tool import basic_tools
-from abstract_dataset import AbstractDataset, AbstractDocument
+from .abstract_dataset import AbstractDataset, AbstractDocument
 from os.path import isfile
 from sys import stderr
 from visualize.models import MetadataType
@@ -43,7 +43,7 @@ class GenericDataset(AbstractDataset):
             with io.open(self._settings_file, 'r', encoding='utf-8', errors='ignore') as settings_file:
                 raw_text = settings_file.read()
                 settings = json.loads(raw_text)
-                for key, value in settings.items():
+                for key, value in list(settings.items()):
                     if key == 'dataset_metadata':
                         self.metadata = value
                     if key == 'dataset_metadata_types':

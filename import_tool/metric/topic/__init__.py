@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 from collections import OrderedDict
 from visualize.models import TopicMetricValue
 #~ import alpha
@@ -7,14 +7,14 @@ from visualize.models import TopicMetricValue
 #~ import sentiment
 #~ import subset_document_entropy
 #~ import subset_token_count
-import token_count
-import type_count
+from . import token_count
+from . import type_count
 
 from sys import path
 path.insert(0,'import_tool/metric/topic')
-import document_entropy
-import word_entropy
-import temperature
+from . import document_entropy
+from . import word_entropy
+from . import temperature
 
 
 database_table = TopicMetricValue

@@ -1,11 +1,11 @@
-from __future__ import division, print_function
+
 
 import os
 import io
 import json
 import random
 from import_tool import basic_tools
-from abstract_dataset import AbstractDataset, AbstractDocument
+from .abstract_dataset import AbstractDataset, AbstractDocument
 
 
 # Range of regular punctuation, 
@@ -54,13 +54,13 @@ class RandomDataset(AbstractDataset):
         random.seed(self.seed)
         return self
     
-    def next(self):
+    def __next__(self):
         if self.doc_index >= self.number_of_documents:
             raise StopIteration
         else:
             doc = RandomDocument(self.document_length)
-            doc.name = 'Document ' + unicode(self.doc_index)
-            doc.source = 'Random Document #' + unicode(self.doc_index)
+            doc.name = 'Document ' + str(self.doc_index)
+            doc.source = 'Random Document #' + str(self.doc_index)
             self.doc_index += 1
             return doc
     
@@ -82,6 +82,6 @@ class RandomDocument(AbstractDocument):
                 self.content += '\n'
             elif r == ASCII_TAB:
                 self.content += '\t'
-        self.content = unicode(self.content)
+        self.content = str(self.content)
         self.metadata = {'meta': 'nothing'}
 

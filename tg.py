@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from __future__ import division, print_function, unicode_literals
+
 
 import os
 import re
@@ -192,13 +192,13 @@ def exec_list(args):
         print()
         
         print('Datasets:')
-        for dataset, items in datasets.iteritems():
+        for dataset, items in datasets.items():
             print(dataset+" ("+items['metadata']['readable_name']+")")
             analyses = items['analyses']
             if len(analyses) == 0:
                 print('\tNo analyses available.')
             else:
-                for analysis, items2 in analyses.iteritems():
+                for analysis, items2 in analyses.items():
                     print('\t'+analysis+" ("+items2['metadata']['readable_name']+")")
 
 
@@ -301,7 +301,7 @@ def main():
     import_parser.add_argument('--convert-html-entities', action='store_true', default=False, 
                                help='Convert html entities to characters (e.g. &gt; converts to >).')
     import_parser.add_argument('-c', '--dataset-class', type=str, action='store', default='Generic',
-                               choices=datasets.keys(),
+                               choices=list(datasets.keys()),
                                help='Optionally specify the dataset class used to interface with your documents.')
     import_parser.add_argument('-v', '--verbose', action='store_true', default=False,
                                help='Display information and warnings to user.')
@@ -339,7 +339,7 @@ def main():
                                                                       """)
     add_database_flag(analysis_parser)
     analysis_parser.add_argument('-a', '--analysis-tool', type=str, action='store', default='MalletLDA',
-                                 choices=analyses.keys(),
+                                 choices=list(analyses.keys()),
                                  help="""Choose the method of topic analysis, MalletLDA is default.""")
     analysis_parser.add_argument('-t', '--number-of-topics', type=int, action='store', default=50, 
                                  help='The number of topics that will be created.')

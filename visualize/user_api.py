@@ -2,7 +2,7 @@
 The user api is responsible for allowing users to login and retrieve stored information
 such as favorites, notes, etc.
 """
-from __future__ import division, print_function, unicode_literals
+
 import json
 import traceback
 from visualize.models import *

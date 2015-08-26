@@ -1,12 +1,12 @@
-from __future__ import division, print_function, unicode_literals
+
 from collections import OrderedDict
 from visualize.models import DocumentAnalysisMetricValue
-import token_count
-import type_count
+from . import token_count
+from . import type_count
 
 from sys import path
 path.insert(0,'import_tool/metric/document/analysis')
-import topic_entropy
+from . import topic_entropy
 
 database_table = DocumentAnalysisMetricValue
 metrics = OrderedDict([

@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 from django.db.models import Count
 from math import log
 
@@ -9,7 +9,7 @@ def compute_metric(database_id, dataset_db, analysis_db):
     tokens_db = analysis_db.tokens
     doc_counts = tokens_db.values('document').annotate(count=Count('document')).order_by('document')
     doc_topic_counts_iter = iter(tokens_db.values('document', 'topics').annotate(count=Count('topics')).order_by('document'))
-    next_doc_topic_row = doc_topic_counts_iter.next()
+    next_doc_topic_row = next(doc_topic_counts_iter)
         
     for row in doc_counts:
         doc_token_count = row['count']
@@ -22,7 +22,7 @@ def compute_metric(database_id, dataset_db, analysis_db):
                     prob = doc_topic_count / doc_token_count
                     entropy -= prob * log(prob, 2)
                 try:
-                    next_doc_topic_row = doc_topic_counts_iter.next()
+                    next_doc_topic_row = next(doc_topic_counts_iter)
                 except:
                     break
             yield {

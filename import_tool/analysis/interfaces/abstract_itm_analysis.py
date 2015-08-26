@@ -1,5 +1,5 @@
-from __future__ import division, print_function, unicode_literals
-from abstract_analysis import AbstractAnalysis
+
+from .abstract_analysis import AbstractAnalysis
 
 
 class AbstractITMAnalysis(AbstractAnalysis):

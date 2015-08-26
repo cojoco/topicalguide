@@ -19,7 +19,7 @@
 # If you have inquiries regarding any further use of the Topical Guide, please
 # contact the Copyright Licensing Office, Brigham Young University, 3760 HBLL,
 # Provo, UT 84602, (801) 422-9339 or 422-3821, e-mail copyright@byu.edu.
-from __future__ import division, print_function, unicode_literals
+
 import time
 from git import Repo
 from django.http import HttpResponse
@@ -29,7 +29,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from sys import path
 path.insert(0,'visualize')
-import api
+from . import api
 import json
 
 

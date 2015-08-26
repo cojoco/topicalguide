@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 from visualize.models import WordType
 
 
@@ -11,7 +11,7 @@ def compute_metric(database_id, dataset_db, analysis_db):
         doc_counts[result['document']] = doc_counts.setdefault(result['document'], 0) + 1
     
     results = []
-    for doc_id, count in doc_counts.items():
+    for doc_id, count in list(doc_counts.items()):
         results.append({
             'document_id': doc_id, 
             'analysis': analysis_db, 

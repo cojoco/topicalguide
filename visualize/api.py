@@ -19,7 +19,7 @@
 # If you have inquiries regarding any further use of the Topical Guide, please
 # contact the Copyright Licensing Office, Brigham Young University, 3760 HBLL,
 # Provo, UT 84602, (801) 422-9339 or 422-3821, e-mail copyright@byu.edu.
-from __future__ import division, print_function, unicode_literals
+
 import sys
 import time
 import json
@@ -30,7 +30,7 @@ from django.http import HttpResponse
 from django.views.decorators.cache import cache_control, patch_cache_control
 from django.db import connections
 from topicalguide import settings
-from api_versions import api_v1
+from .api_versions import api_v1
 
 DEBUG = settings.DEBUG
 ALLOW_CACHING = DEBUG # not DEBUG # Change to false while debugging the api
@@ -52,7 +52,7 @@ def api(request, cacheable_request=False):
     DJANGO_CACHE_KEY_LENGTH_LIMIT = 250
     path = request.get_full_path()
     
-    if len(path) <= DJANGO_CACHE_KEY_LENGTH_LIMIT and cache.has_key(path) and ALLOW_CACHING: # Check the cache.
+    if len(path) <= DJANGO_CACHE_KEY_LENGTH_LIMIT and path in cache and ALLOW_CACHING: # Check the cache.
         if DEBUG: print('API request hit cache.')
         response = HttpResponse(cache.get(path), content_type='application/json')
     else:

@@ -1,7 +1,7 @@
-from __future__ import division, print_function, unicode_literals
+
 from django.db import transaction
 from django.db.models import Sum
-from abstract_topic_namer import AbstractTopicNamer
+from .abstract_topic_namer import AbstractTopicNamer
 from visualize.models import TopicNameScheme, TopicName
 from django.db import transaction, connections
 from functools import cmp_to_key
@@ -36,18 +36,18 @@ class TfitfTopicNamer(AbstractTopicNamer):
         
         # Calculate ITF
         ITF = analysis_db.topic_word_type_occurrences()
-        for key, value in ITF.items():
+        for key, value in list(ITF.items()):
             ITF[key] = math.log(topic_count)-math.log(value)
         
         topic_names = {}
         # Calculate TF-ITF scores and take the max
         for topic_db in analysis_db.topics.all():
             topic_tf_itf = topic_db.word_token_type_counts(words='*')
-            for word, count in topic_tf_itf.items():
+            for word, count in list(topic_tf_itf.items()):
                 topic_tf_itf[word] = count*ITF[word]
             
-            name = u' '.join([str(word) for word, count in \
-                sorted([(key, value) for key, value in topic_tf_itf.items()],
+            name = ' '.join([str(word) for word, count in \
+                sorted([(key, value) for key, value in list(topic_tf_itf.items())],
                         key=cmp_to_key(compare_float))[:self.n]])
             
             topic_names[topic_db.number] = name

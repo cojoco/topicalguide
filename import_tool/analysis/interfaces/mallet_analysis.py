@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 import io
 import json
 import math
@@ -8,7 +8,7 @@ import subprocess
 from os.path import join, abspath
 from import_tool import basic_tools
 from import_tool.import_system_utilities import TOKEN_REGEX
-from abstract_analysis import AbstractAnalysis
+from .abstract_analysis import AbstractAnalysis
 
 
 class MalletLdaAnalysis(AbstractAnalysis):
@@ -198,7 +198,7 @@ class MalletLdaAnalysis(AbstractAnalysis):
                     tokens = self.tokenize(doc.get_content())
                     for token, token_start in tokens:
                         temp_word_type_counts[token] = temp_word_type_counts.setdefault(token, 0) + 1
-                for word_type, count in temp_word_type_counts.items(): # add singletons to stopword list
+                for word_type, count in list(temp_word_type_counts.items()): # add singletons to stopword list
                     if count <= word_type_count_threshold:
                         self._excluded_words[word_type] = True
                 with io.open(self.excluded_words_file, 'w', encoding='utf-8') as ex_f:
@@ -231,7 +231,7 @@ class MalletLdaAnalysis(AbstractAnalysis):
                         token_start_index_offset = 0 # needed to make sure the start index remains correct once the document is re-merged
                         for subdoc_name, subdoc_content in subdocuments:
                             if subcount > 0:
-                                w2.write(u'\n')
+                                w2.write('\n')
                             subcount += 1
                             subdoc_to_doc_map[subdoc_name] = doc_index
                             tokens = self.tokenize(subdoc_content)
@@ -264,8 +264,8 @@ class MalletLdaAnalysis(AbstractAnalysis):
                                     wordtype_to_number[tok_stem] = tok_num
                                 token_numbers.append(str(tok_num))
                                 token_start_indices.append([tok, tok_start])
-                            text = u' '.join(token_numbers)
-                            w.write(u'{0} all {1}\n'.format(subdoc_name, text))
+                            text = ' '.join(token_numbers)
+                            w.write('{0} all {1}\n'.format(subdoc_name, text))
                             w2.write(str(json.dumps(token_start_indices)))
                             token_start_index_offset += len(subdoc_content)
                             for tok, tok_start in tokens:
@@ -305,7 +305,7 @@ class MalletLdaAnalysis(AbstractAnalysis):
         self._prepare_analysis_input(documents)
         
         with io.open(self.stopwords_file, 'w', encoding='utf-8') as f:
-            f.write('\n'.join(self.stopwords.keys()))
+            f.write('\n'.join(list(self.stopwords.keys())))
         
         self.mallet_imported_data_file = join(self._working_dir, 'imported_data.mallet')
         self.mallet_output_gz_file = join(self._working_dir, self.name + '.outputstate.gz')
@@ -381,9 +381,9 @@ class MalletLdaAnalysis(AbstractAnalysis):
         with io.open(self.number_to_wordtype_file, 'r', encoding='utf-8') as f:
             self.number_to_wordtype = json.loads(f.read())
         
-        return self.next() # create a generator
+        return next(self) # create a generator
     
-    def next(self):
+    def __next__(self):
         """Return the next tuple."""
         with io.open(self.start_index_file, 'r', encoding='utf-8') as f_index:
             with io.open(self.mallet_output_file, 'r', encoding='utf-8') as f:
@@ -528,7 +528,7 @@ class MalletHldaAnalysis(MalletLdaAnalysis):
         #~ 
         #~ return self.next() # create a generator
     #~ 
-    def next(self):
+    def __next__(self):
         """Return the next tuple."""
         with io.open(self.start_index_file, 'r', encoding='utf-8') as f_index:
             with io.open(self.mallet_output_file, 'r', encoding='utf-8') as f:

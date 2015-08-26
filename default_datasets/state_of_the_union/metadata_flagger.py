@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 from visualize.models import MetadataType
 
 def metadata_generator(dataset_db, documents_db):

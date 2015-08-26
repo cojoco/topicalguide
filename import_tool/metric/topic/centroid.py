@@ -29,15 +29,15 @@ class AbstractCentroidFinder(object):
         self._print_status(self._best(weighted_sums), n if n else self.n)
     
     def _best(self, weighted_sums):
-        return sorted(weighted_sums.items(), key=lambda x:x[1], reverse=True)
+        return sorted(list(weighted_sums.items()), key=lambda x:x[1], reverse=True)
     
     def _print_status(self, best, n):
-        print str(best[0:n])
+        print(str(best[0:n]))
 
     def save(self, topic, weighted_sums):
         best = self._best(weighted_sums)
         self._print_status(best, self.n)
-        print
+        print()
         
         f = open(environ['HOME'] + '/Projects/topicalguide/output/centroids/{0}_{1}_{2}.txt'.format(topic.analysis.dataset.name,topic.analysis.name,topic.number), 'w')
         f.write(self.topic_summary(topic))
@@ -60,7 +60,7 @@ class CentroidFinder(AbstractCentroidFinder):
         for tw in topic_words:
             type = tw.word.type
             weight = float(tw.count)
-            print 'word "{0}", weight {1}'.format(type, weight)
+            print('word "{0}", weight {1}'.format(type, weight))
 #            print 'Relevant pairs: {0}'.format(self.db.word_pair_count(type,min_count=min_cocount))
             
             skipped_words = 0
@@ -73,9 +73,9 @@ class CentroidFinder(AbstractCentroidFinder):
                     p_joint = cocount / total_cocounts
                     word = word1 if type == word2 else word2
                     if i % 1000 == 0:
-                        print word,
+                        print(word, end=' ')
                         sys.stdout.flush()
-                        if i % 5000 == 0 and i > 0: print i,
+                        if i % 5000 == 0 and i > 0: print(i, end=' ')
                     
                     c_word1 = float(self.db.count(word1))
                     if c_word1 < min_word_count:
@@ -96,13 +96,13 @@ class CentroidFinder(AbstractCentroidFinder):
                             except KeyError:
                                 previous_sum = 0.0
                             weighted_sums[word] = previous_sum + weighted_pmi
-            print
-            print 'Pairs skipped for lack of word counts: ' + unicode(skipped_words)
-            print 'Pairs skipped for lack of cocounts: ' + unicode(skipped_cocounts)
+            print()
+            print('Pairs skipped for lack of word counts: ' + str(skipped_words))
+            print('Pairs skipped for lack of cocounts: ' + str(skipped_cocounts))
             self.print_status(weighted_sums)
-            print
+            print()
         self.save(topic, weighted_sums)
-        print
+        print()
 
 class UnifiedPassCentroidFinder(AbstractCentroidFinder):
     def centroids(self, topic, min_word_count=1.0, min_cocount=3.0):
@@ -113,7 +113,7 @@ class UnifiedPassCentroidFinder(AbstractCentroidFinder):
         topic_word_weights = dict()
         for tw in topic_words:
             topic_word_weights[tw.word.type] = tw.count
-        topic_word_types = topic_word_weights.keys()
+        topic_word_types = list(topic_word_weights.keys())
         
         weighted_sums = dict()
         def increment(topic_word, other_word):
@@ -143,10 +143,10 @@ class UnifiedPassCentroidFinder(AbstractCentroidFinder):
                 else:
                     p_joint = cocount / total_cocounts
                     if i % 10000 == 0:
-                        print '({0},{1})'.format(word1,word2),
+                        print('({0},{1})'.format(word1,word2), end=' ')
                         sys.stdout.flush()
                         if i % 100000 == 0 and i > 0:
-                            print '\n{0}',
+                            print('\n{0}', end=' ')
                             self.print_status(weighted_sums,n=5)
                     c_word1 = float(self.db.count(word1))
                     if c_word1 < min_word_count:
@@ -160,11 +160,11 @@ class UnifiedPassCentroidFinder(AbstractCentroidFinder):
                             p_word2 = c_word2 / total_counts
                             pmi = log(p_joint) - log(p_word1) - log(p_word2)
                             count_pair(word1, word2, pmi)
-        print
-        print 'Pairs skipped for lack of word counts: ' + unicode(skipped_words)
-        print 'Pairs skipped for lack of cocounts: ' + unicode(skipped_cocounts)
+        print()
+        print('Pairs skipped for lack of word counts: ' + str(skipped_words))
+        print('Pairs skipped for lack of cocounts: ' + str(skipped_cocounts))
         self.save(topic, weighted_sums)
-        print
+        print()
 
 if __name__ == '__main__':
     cf = CentroidFinder(environ['HOME']+'/Data/wikipedia.org/wikipedia_counts4.sqlite3')
@@ -173,7 +173,7 @@ if __name__ == '__main__':
     topics = [x for x in a.topics.all()]#.order_by('number')
     random.shuffle(topics)
     for topic in topics:
-        print 'Topic ' + str(topic.number)
+        print('Topic ' + str(topic.number))
         for tw in sorted(topic.topicword_set.all(),key=lambda x:x.count,reverse=True)[0:20]:
-            print "\t"+tw.word.type + ": " + str(tw.count)
+            print("\t"+tw.word.type + ": " + str(tw.count))
         cf.centroids(topic)

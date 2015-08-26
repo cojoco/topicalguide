@@ -1,10 +1,10 @@
-from __future__ import division, print_function, unicode_literals
+
 from visualize.models import DatasetMetricValue
 from collections import OrderedDict
 
 from sys import path
 path.insert(0,'import_tool/metric/dataset')
-import document_count
+from . import document_count
 
 database_table = DatasetMetricValue
 metrics = OrderedDict([

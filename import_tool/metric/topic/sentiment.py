@@ -23,7 +23,7 @@
 # Provo, UT 84602, (801) 422-9339 or 422-3821, e-mail copyright@byu.edu.
 
 
-from __future__ import division
+
 
 import os, sys
 
@@ -62,12 +62,12 @@ def add_metric(dataset, analysis, force_import=False, *args, **kwargs):
         negative = 0;
         for docTopic in topic.documenttopic_set.all():
             filename = data_root + '/' + docTopic.document.filename
-            print topic, filename
+            print(topic, filename)
             sentiment = float(sentiment_document(filename))
-            print 'sentiment returned:', sentiment
+            print('sentiment returned:', sentiment)
             if sentiment == 1 :
                 positive += docTopic.count
-            print '%d/%d' % (positive, topic.total_count)
+            print('%d/%d' % (positive, topic.total_count))
         # compute aggregate information for topic
         topicSentiment = float(positive)/float(topic.total_count)
         tmv = TopicMetricValue(topic=topic, metric=metric, value=topicSentiment)

@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 
 import os
 import json
@@ -20,22 +20,22 @@ from django.db.models import Max
 
 import sys
 sys.path.insert(0, 'import_tool')
-import basic_tools
-from tools import VerboseTimer
-from dataset.utilities import create_dataset, create_documents
-from analysis.utilities import get_all_word_types, create_analysis, \
+from . import basic_tools
+from .tools import VerboseTimer
+from .dataset.utilities import create_dataset, create_documents
+from .analysis.utilities import get_all_word_types, create_analysis, \
      create_word_type_entries, create_tokens, create_topic_heirarchy, \
      create_stopwords, create_excluded_words, create_topic_names
-from analysis.name_schemes.top_n import TopNTopicNamer
-from analysis.name_schemes.tf_itf import TfitfTopicNamer
-from metadata.utilities import get_all_metadata_types, all_document_metadata_checker
+from .analysis.name_schemes.top_n import TopNTopicNamer
+from .analysis.name_schemes.tf_itf import TfitfTopicNamer
+from .metadata.utilities import get_all_metadata_types, all_document_metadata_checker
 from visualize.models import *
 
 DATABASE_OPTIMIZE_DEBUG = False # settings.DEBUG
 
 MAX_TOKEN_LENGTH = WordType._meta.get_field('word').max_length
 
-TOKEN_REGEX = u"(([^\\W])+([-'\u2019,])?)+([^\\W])+"
+TOKEN_REGEX = "(([^\\W])+([-'\u2019,])?)+([^\\W])+"
 BASIC_DATASET_METRICS = [
     'dataset:document_count',
 ]
@@ -95,7 +95,7 @@ def run_syncdb(database_info):
     if database_info: # create an entry in DATABASES if database_info is present
         dataset_identifier = '12345'
         while dataset_identifier in settings.DATABASES:
-            dataset_identifier = unicode(random.randint(1, 2000000))
+            dataset_identifier = str(random.randint(1, 2000000))
         settings.DATABASES[dataset_identifier] = database_info
     call_command('migrate', database=dataset_identifier)
     return dataset_identifier
@@ -122,7 +122,7 @@ def check_dataset(dataset):
     for doc in dataset:
         doc_uri = doc.source
         content = doc.content
-        if type(content) != unicode:
+        if type(content) != str:
             doc_not_unicode.append(doc_uri)
             continue
         content = content.strip()
@@ -141,9 +141,9 @@ def check_dataset(dataset):
     def print_dict(msg, d, value_is_list=True):
         print(msg)
         if value_is_list:
-            for k, v in d.items(): print('%s: %s'%(k, ','.join(v)))
+            for k, v in list(d.items()): print('%s: %s'%(k, ','.join(v)))
         else:
-            for k, v in d.items(): print('%s: %s'%(k, v))
+            for k, v in list(d.items()): print('%s: %s'%(k, v))
         print()
         
     
@@ -245,8 +245,8 @@ def check_analysis(database_id, dataset_name, analysis, directories,
     """
     def dict_to_string(d):
         result = ''
-        for k, v in d.items():
-            result += unicode(k) + ': ' + unicode(v) + '\n'
+        for k, v in list(d.items()):
+            result += str(k) + ': ' + str(v) + '\n'
         return result
     
     print('Analysis Name:', analysis.name)
@@ -459,8 +459,8 @@ def link_dataset(database_id, dataset_name):
 
 def get_all_metric_names():
     """Return a list of all metric names."""
-    from metric import all_metrics
-    return all_metrics.keys()
+    from .metric import all_metrics
+    return list(all_metrics.keys())
 
 def run_metrics(database_id, dataset_name, analysis_name, metrics, verbose=False):
     """Run the metrics specified in the given list.
@@ -472,8 +472,8 @@ def run_metrics(database_id, dataset_name, analysis_name, metrics, verbose=False
     metrics -- a list of metric names to be run
     """
     if verbose: print('Running metrics.')
-    from metric import all_metrics, all_tables, all_metrics_exists
-    from metric.utilities import get_metric_names, run_metric
+    from .metric import all_metrics, all_tables, all_metrics_exists
+    from .metric.utilities import get_metric_names, run_metric
     
     metrics_db = get_metric_names(database_id)
     dataset_db = Dataset.objects.using(database_id).get(name=dataset_name)
