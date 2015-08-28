@@ -1,8 +1,8 @@
-from __future__ import division, print_function, unicode_literals
+
 import os
 import re
 from DateTime import DateTime
-from HTMLParser import HTMLParser
+from html.parser import HTMLParser
 
 
 def seperate_metadata_and_content(s):
@@ -168,7 +168,7 @@ def create_subdocuments(name, content, major_delimiter='\n', min_chars=1000):
                 subdoc_number += 1
     
     result = []
-    for index in xrange(0, subdoc_number):
+    for index in range(0, subdoc_number):
         result.append((name + '_subdoc' + str(index), subdoc_contents[index]))
     return result
 
@@ -219,10 +219,10 @@ def get_unicode_content(file_path, encoding=None):
             return contents.decode(encoding=determined_encoding)
         else:
             with open(file_path, 'r') as f:
-                return unicode(f.read(), encoding=encoding, errors='ignore')
+                return str(f.read(), encoding=encoding, errors='ignore')
     except UnicodeError:
         with open(file_path, 'r') as f:
-            return unicode(f.read(), encoding='utf-8', errors='ignore')
+            return str(f.read(), encoding='utf-8', errors='ignore')
 
 def remove_punctuation(s):
     """Return a string without punctuation (only alpha, numeric, underscore and whitespace characters survive)."""

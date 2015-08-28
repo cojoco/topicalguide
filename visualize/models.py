@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 
 import os
 import io
@@ -22,7 +22,7 @@ class Metric(models.Model):
     name = models.CharField(max_length=128)# TODO , unique=True)
     
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 class MetricValue(models.Model):
     metric = models.ForeignKey('Metric')
@@ -32,7 +32,7 @@ class MetricValue(models.Model):
         abstract = True
     
     def __unicode__(self):
-        return unicode(self.value)
+        return str(self.value)
 
 class MetadataType(models.Model):
     name = models.CharField(max_length=128)
@@ -42,7 +42,7 @@ class MetadataType(models.Model):
         unique_together=('name', 'datatype')
     
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 class MetadataValue(models.Model):
     metadata_type = models.ForeignKey('MetadataType')
@@ -56,13 +56,13 @@ class MetadataValue(models.Model):
         abstract = True
     
     def __unicode__(self):
-        return unicode(self.value())
+        return str(self.value())
 
     def set(self, value, value_type='text'):
         if value_type == 'float':
             self.float_value = float(value)
         elif value_type == 'text':
-            self.text_value = unicode(value)
+            self.text_value = str(value)
         elif value_type == 'int':
             self.int_value = int(value)
         elif value_type == 'bool':
@@ -87,7 +87,7 @@ class MetadataValue(models.Model):
             result = self.bool_value
         if self.datetime_value:
             if result: raise Exception("MetadataValues cannot be of more than one type.")
-            result = unicode(self.datetime_value)
+            result = str(self.datetime_value)
         return result
 
     def type(self):
@@ -226,7 +226,7 @@ class Document(models.Model):
         unique_together = ('dataset', 'index')
     
     def __unicode__(self):
-        return unicode(self.filename)
+        return str(self.filename)
     
     def get_metadata(self):
         result = {}
@@ -453,7 +453,7 @@ class TopicNameScheme(models.Model):
     name = models.CharField(max_length=128, unique=True)
     
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 class TopicName(models.Model):
     topic = models.ForeignKey('Topic', related_name='names')
@@ -464,7 +464,7 @@ class TopicName(models.Model):
         unique_together = ('topic', 'name_scheme')
     
     def __unicode__(self):
-        return unicode(self.name)
+        return str(self.name)
 
 ##############################################################################
 # Tables for tokenization schemes, tokens, word types, word representations.
@@ -475,7 +475,7 @@ class WordType(models.Model):
     word = models.CharField(max_length=128, unique=True)
     
     def __unicode__(self):
-        return unicode(self.word)
+        return str(self.word)
 
 # Warning: this class doesn't have an auto-incrementing primary key.
 class WordToken(models.Model):

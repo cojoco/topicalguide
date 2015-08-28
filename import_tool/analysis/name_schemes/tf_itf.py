@@ -1,7 +1,7 @@
-from __future__ import division, print_function, unicode_literals
+
 from django.db import transaction
 from django.db.models import Sum
-from abstract_topic_namer import AbstractTopicNamer
+from .abstract_topic_namer import AbstractTopicNamer
 from visualize.models import TopicNameScheme, TopicName
 from django.db import transaction, connections
 import math
@@ -18,7 +18,7 @@ class TfitfTopicNamer(AbstractTopicNamer):
     
     @property
     def name_scheme(self):
-        return 'TF-ITF Top '+unicode(self.n)
+        return 'TF-ITF Top '+str(self.n)
     
     def name_topics(self, database_id, analysis_db):
         def compare_float(a, b):
@@ -28,25 +28,43 @@ class TfitfTopicNamer(AbstractTopicNamer):
                 return -1
             else:
                 return 0
+        def cmp_to_key(mycmp):
+            'Convert a cmp= function into a key= function'
+            class K(object):
+                def __init__(self, obj, *args):
+                    self.obj = obj
+                def __lt__(self, other):
+                    return mycmp(self.obj, other.obj) < 0
+                def __gt__(self, other):
+                    return mycmp(self.obj, other.obj) > 0
+                def __eq__(self, other):
+                    return mycmp(self.obj, other.obj) == 0
+                def __le__(self, other):
+                    return mycmp(self.obj, other.obj) <= 0
+                def __ge__(self, other):
+                    return mycmp(self.obj, other.obj) >= 0
+                def __ne__(self, other):
+                    return mycmp(self.obj, other.obj) != 0
+            return K
 
         analysis_db.topics.prefetch_related('tokens')
         topic_count = analysis_db.topics.count()
         
         # Calculate ITF
         ITF = analysis_db.topic_word_type_occurrences()
-        for key, value in ITF.iteritems():
+        for key, value in ITF.items():
             ITF[key] = math.log(topic_count)-math.log(value)
         
         topic_names = {}
         # Calculate TF-ITF scores and take the max
         for topic_db in analysis_db.topics.all():
             topic_tf_itf = topic_db.word_token_type_counts(words='*')
-            for word, count in topic_tf_itf.iteritems():
+            for word, count in topic_tf_itf.items():
                 topic_tf_itf[word] = count*ITF[word]
             
-            name = u' '.join([unicode(word) for word, count in \
-                sorted([(key, value) for key, value in topic_tf_itf.iteritems()],
-                        compare_float)[:self.n]])
+            name = ' '.join([str(word) for word, count in \
+                sorted([(key, value) for key, value in topic_tf_itf.items()],
+                        key=cmp_to_key(compare_float))[:self.n]])
             
             topic_names[topic_db.number] = name
         return topic_names

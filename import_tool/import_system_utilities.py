@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 
 import os
 import json
@@ -18,22 +18,22 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'topicalguide.settings'
 from django.db import transaction, connections
 from django.db.models import Max
 
-import basic_tools
-from tools import VerboseTimer
-from dataset.utilities import create_dataset, create_documents
-from analysis.utilities import get_all_word_types, create_analysis, \
+from . import basic_tools
+from .tools import VerboseTimer
+from .dataset.utilities import create_dataset, create_documents
+from .analysis.utilities import get_all_word_types, create_analysis, \
      create_word_type_entries, create_tokens, create_topic_heirarchy, \
      create_stopwords, create_excluded_words, create_topic_names
-from analysis.name_schemes.top_n import TopNTopicNamer
-from analysis.name_schemes.tf_itf import TfitfTopicNamer
-from metadata.utilities import get_all_metadata_types
+from .analysis.name_schemes.top_n import TopNTopicNamer
+from .analysis.name_schemes.tf_itf import TfitfTopicNamer
+from .metadata.utilities import get_all_metadata_types
 from visualize.models import *
 
 DATABASE_OPTIMIZE_DEBUG = True # settings.DEBUG
 
 MAX_TOKEN_LENGTH = WordType._meta.get_field('word').max_length
 
-TOKEN_REGEX = u"(([^\\W])+([-'\u2019,])?)+([^\\W])+"
+TOKEN_REGEX = "(([^\\W])+([-'\u2019,])?)+([^\\W])+"
 BASIC_DATASET_METRICS = [
     'dataset:document_count',
 ]
@@ -105,7 +105,7 @@ def check_dataset(dataset):
     for doc in dataset:
         content = doc.content
         meta = doc.metadata
-        assert type(content) == unicode
+        assert type(content) == str
         if content == '' or content == None: # collect blank documents
             blank_documents.append(doc.source)
         if meta == {} or meta == None: # collect blank metadata
@@ -137,30 +137,30 @@ def check_dataset(dataset):
     
     if dataset_metadata_types:
         print('Listing of dataset metadata and their associated types: ')
-        for key, value in dataset_metadata_types.items():
+        for key, value in list(dataset_metadata_types.items()):
             print(key + ': ' + value)
     else:
         print('No dataset metadata.')
     print()
-    for key, value in dataset.metadata_types.iteritems():
+    for key, value in dataset.metadata_types.items():
         if key not in dataset_metadata_types:
-            print("Metadata type in dataset metadata_types not specified: " + unicode(key))
+            print("Metadata type in dataset metadata_types not specified: " + str(key))
         else:
             if dataset_metadata_types[key] != value:
-                print("Metadata type for dataset metadata_types doesn't match that found: %s: %s"%(unicode(key), unicode(value)))
+                print("Metadata type for dataset metadata_types doesn't match that found: %s: %s"%(str(key), str(value)))
     
     if doc_metadata_types:
         print('Listing of document metadata and their associated types: ')
-        for key, value in doc_metadata_types.items():
+        for key, value in list(doc_metadata_types.items()):
             print(key + ': ' + value)
     else:
         print('No document metdata')
-    for key, value in dataset.document_metadata_types.iteritems():
+    for key, value in dataset.document_metadata_types.items():
         if key not in doc_metadata_types:
-            print("Metadata type in document metadata_types not specified: " + unicode(key))
+            print("Metadata type in document metadata_types not specified: " + str(key))
         else:
             if doc_metadata_types[key] != value:
-                print("Metadata type for document metadata_types doesn't match that found: %s: %s"%(unicode(key), unicode(value)))
+                print("Metadata type for document metadata_types doesn't match that found: %s: %s"%(str(key), str(value)))
     
     print()
 
@@ -224,8 +224,8 @@ def check_analysis(database_id, dataset_name, analysis, directories,
     """
     def dict_to_string(d):
         result = ''
-        for k, v in d.iteritems():
-            result += unicode(k) + ': ' + unicode(v) + '\n'
+        for k, v in d.items():
+            result += str(k) + ': ' + str(v) + '\n'
         return result
     
     print('Analysis Name:', analysis.name)
@@ -402,8 +402,8 @@ def link_dataset(database_id, dataset_name):
 
 def get_all_metric_names():
     """Return a list of all metric names."""
-    from metric import all_metrics
-    return all_metrics.keys()
+    from .metric import all_metrics
+    return list(all_metrics.keys())
 
 def run_metrics(database_id, dataset_name, analysis_name, metrics):
     """Run the metrics specified in the given list.
@@ -414,8 +414,8 @@ def run_metrics(database_id, dataset_name, analysis_name, metrics):
                      metrics
     metrics -- a list of metric names to be run
     """
-    from metric import all_metrics, all_tables, all_metrics_exists
-    from metric.utilities import get_metric_names, run_metric
+    from .metric import all_metrics, all_tables, all_metrics_exists
+    from .metric.utilities import get_metric_names, run_metric
     
     metrics_db = get_metric_names(database_id)
     dataset_db = Dataset.objects.using(database_id).get(name=dataset_name)

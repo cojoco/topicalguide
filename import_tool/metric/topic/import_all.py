@@ -29,13 +29,13 @@ from metric_scripts import metrics
 
 def main(dataset, analysis, force_import):
     for metric in metrics:
-        print 'Attempting to add', metric
+        print('Attempting to add', metric)
         try:
             metrics[metric].add_metric(dataset, analysis, force_import)
-            print 'Successfully added', metric
+            print('Successfully added', metric)
         except RuntimeError as e:
-            print 'Failed to add', metric
-            print 'Exception was', e
+            print('Failed to add', metric)
+            print('Exception was', e)
 
 
 if __name__ == '__main__':

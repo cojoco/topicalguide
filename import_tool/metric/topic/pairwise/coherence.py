@@ -23,7 +23,7 @@
 # Provo, UT 84602, (801) 422-9339 or 422-3821, e-mail copyright@byu.edu.
 
 
-from __future__ import division
+
 
 import os, sys
 from django.db.models.aggregates import Count
@@ -82,10 +82,10 @@ def add_metric(database_id, dataset, analysis, force_import=False, *args, **kwar
             wordset.add(w)
 
     for i, topic1 in enumerate(topics):
-        print topic1
+        print(topic1)
         topic1_words = topicwords[i]
         for j, topic2 in enumerate(topics):
-            print ' ', topic2
+            print(' ', topic2)
             topic2_words = topicwords[j]
             coherence = pairwise_coherence(topic1_words, topic2_words, c,
                     total_words, total_cooccurrences)

@@ -1,9 +1,9 @@
-from __future__ import print_function
+
 import os
 import io
 import json
 from import_tool import basic_tools
-from generic_dataset import GenericDataset, GenericDocument
+from .generic_dataset import GenericDataset, GenericDocument
 
 
 class JsonDataset(GenericDataset):
@@ -57,7 +57,7 @@ class JsonDataset(GenericDataset):
             remove_index = bad_doc_indices.pop()
             del self._list_of_documents[remove_index]
     
-    def next(self):
+    def __next__(self):
         """
         Return the next JsonDocument.  Files that cannot be opened \
         or raise an error will not be included.

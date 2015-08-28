@@ -1,4 +1,4 @@
-from __future__ import division, print_function, unicode_literals
+
 
 from django.db import transaction
 from django.db import connections
@@ -25,7 +25,7 @@ def create_metadata_types(database_id, metadata_types, meta_types_db):
         to_commit = []
         meta_type_names = []
         meta_types = []
-        for name, t in metadata_types.iteritems():
+        for name, t in metadata_types.items():
             if (name, t) not in meta_types_db:
                 meta_type_names.append(name)
                 meta_types.append(t)
@@ -61,7 +61,7 @@ def create_metadata(database_id, db_objects, db_value_table, attr_name,
         meta_values_db_to_create = []
         kwargs = { attr_name: None, 'metadata_type': None }
         for db_object, metadata_values_dict in zip(db_objects, metadata_values):
-            for name, value in metadata_values_dict.items():
+            for name, value in list(metadata_values_dict.items()):
                 kwargs[attr_name] = db_object
                 kwargs['metadata_type'] = meta_types_db[(name, metadata_types[name])]
                 meta_value_db = db_value_table(**kwargs)

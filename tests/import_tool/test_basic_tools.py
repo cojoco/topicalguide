@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 
 import os
 
@@ -73,9 +73,9 @@ def test_remove_html_tags():
     assert result == ' Some content &ldquo;'
 
 def test_replace_html_entities():
-    text = u'<html> <body>Some content &pound;</body></html>'
+    text = '<html> <body>Some content &pound;</body></html>'
     result = basic_tools.replace_html_entities(text)
-    assert result == u'<html> <body>Some content \xA3</body></html>'
+    assert result == '<html> <body>Some content \xA3</body></html>'
 
 def test_get_unicode_content():
     root_dir = os.path.dirname(os.path.abspath(__file__))
@@ -84,8 +84,8 @@ def test_get_unicode_content():
     utf8 = os.path.join(path, 'utf-8.txt')
     latin1 = os.path.join(path, 'latin_1.txt')
     
-    expected_utf8 = u'random text: \xA3\xC1'
-    expected_latin1 = u'random text: \xC1'
+    expected_utf8 = 'random text: \xA3\xC1'
+    expected_latin1 = 'random text: \xC1'
     
     with open(latin1, 'rb') as f:
         assert expected_latin1.encode(encoding='utf-8') != f.read()

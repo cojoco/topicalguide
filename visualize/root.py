@@ -53,7 +53,7 @@ def root(request, *args, **kwargs):
     try:
         tags = Repo(__file__).tags
         if tags:
-            version = unicode(tags[-1])
+            version = str(tags[-1])
     except:
         pass
     context['version'] = version

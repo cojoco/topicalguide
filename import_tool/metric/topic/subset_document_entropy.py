@@ -23,7 +23,7 @@
 # Provo, UT 84602, (801) 422-9339 or 422-3821, e-mail copyright@byu.edu.
 
 
-from __future__ import division
+
 
 import os, sys
 
@@ -43,7 +43,7 @@ def add_metric(dataset, analysis, force_import=False, *args, **kwargs):
     for attr in analysis.dataset.attribute_set.all():
         for val in attr.value_set.all():
             metric_name = 'Document Entropy for %s: %s' % (attr.name, val.value)
-            print metric_name
+            print(metric_name)
             try:
                 metric = TopicMetric.objects.get(name=metric_name,
                         analysis=analysis)

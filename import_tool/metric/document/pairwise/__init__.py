@@ -21,7 +21,7 @@
 # Provo, UT 84602, (801) 422-9339 or 422-3821, e-mail copyright@byu.edu.
 from collections import OrderedDict
 
-import topic_correlation, word_correlation
+from . import topic_correlation, word_correlation
 
 metrics = OrderedDict([
     ('topic_correlation', topic_correlation),

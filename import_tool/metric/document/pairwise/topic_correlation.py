@@ -21,7 +21,7 @@
 # Provo, UT 84602, (801) 422-9339 or 422-3821, e-mail copyright@byu.edu.
 
 
-from __future__ import division
+
 from math import isnan
 
 import sys
@@ -74,7 +74,7 @@ def add_metric(database_id, dataset, analysis):
         vectornorms = [norm(vector) for vector in doctopicvectors]
 
         logger.info('Comparing the vectors')
-        print 'compare vectors'
+        print('compare vectors')
         sys.stdout.flush()
         timer = TimeLongThing(len(documents)**2, 0, 0)
         for i, doc1 in enumerate(documents):

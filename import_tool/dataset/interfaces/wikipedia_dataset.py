@@ -1,10 +1,10 @@
-from __future__ import print_function
+
 
 import os
 import sys
 
 from import_tool import basic_tools
-from abstract_dataset import AbstractDataset, AbstractDocument
+from .abstract_dataset import AbstractDataset, AbstractDocument
 
 
 class WikipediaDataset(AbstractDataset):
@@ -106,7 +106,7 @@ class WikipediaDataset(AbstractDataset):
         self.list_of_documents = GenericTools.get_all_files_from_directory(self.documents_directory, self.is_recursive)
         return self
     
-    def next(self):
+    def __next__(self):
         """
         Return the next WikipediaDocument.  Files that cannot be opened \
         or raise an error will not be included.

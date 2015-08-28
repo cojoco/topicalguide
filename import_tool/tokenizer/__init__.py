@@ -1,5 +1,5 @@
-from __future__ import division, print_function, unicode_literals
-from regex import RegexTokenizer
+
+from .regex import RegexTokenizer
 
 # Put any custom tokenizers here.
 tokenizers = {
